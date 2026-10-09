@@ -139,6 +139,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .tonight .td { color: var(--muted); font-size: 13.5px; line-height: 1.4; margin-top: 3px; }
 .tonight .go { margin-left: auto; color: var(--accent); font: 500 12px/1 var(--font-data); letter-spacing: 0.08em; text-transform: uppercase; flex: none; padding-top: 4px; }
 .sect { font: 500 11px/1 var(--font-data); text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin: 18px 0 2px; }
+.hoverchip { position: fixed; left: 50%; top: calc(50% + 42px); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid rgba(170,198,255,0.55); color: var(--fg); border-radius: 999px; padding: 7px 14px; font: 500 14px/1 var(--font-ui); cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); max-width: 70vw; white-space: nowrap; }
+.hoverchip span:first-child { overflow: hidden; text-overflow: ellipsis; }
+.hoverchip span:last-child { color: var(--cons); font-size: 18px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -173,6 +176,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 
 <div class="target" id="targetChip" hidden><span>Finding <b id="targetName"></b> <span id="targetSep"></span></span><button type="button" id="targetClear" aria-label="Stop finding">×</button></div>
 <div class="toast" id="toast" hidden></div>
+<button class="hoverchip" id="hoverChip" type="button" hidden><span id="hoverName"></span><span aria-hidden="true">›</span></button>
 
 <div class="bar bottom" id="bottomBar">
   <div class="heading" aria-live="polite">
@@ -670,6 +674,7 @@ function setTarget(t, opts) {
   }
 }
 $("targetClear").onclick = () => setTarget(null);
+$("hoverChip").onclick = () => { if (hover) showInfo(hover); };
 
 /* ---------- focus: which constellation the reticle (or mouse) rests on ---------- */
 let focus = null, mouse = null, selected = null;
@@ -689,7 +694,7 @@ function findFocus() {
 }
 
 /* ---------- drawing ---------- */
-let visible = [], labels = [];
+let visible = [], labels = [], labelHits = [], hover = null;
 function skyColors(sunAlt) {
   if (sunAlt > 0) return ["#2a5894", "#86b0da", "rgba(220,235,255,0.35)"];
   if (sunAlt > -6) return ["#18264d", "#5d5677", "rgba(255,170,120,0.28)"];
@@ -714,7 +719,7 @@ function draw(ts) {
     g.addColorStop(0, zen); g.addColorStop(1, hor);
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   }
-  visible = []; labels = [];
+  visible = []; labels = []; labelHits = [];
   const day = frame.sunAlt > -4;
   const dark = clamp((-frame.sunAlt - 8) / 10, 0, 1);
   const zoomBoost = Math.max(0, Math.log2(90 / view.fov)) * 0.9;
@@ -791,7 +796,7 @@ function draw(ts) {
     if (f.hc && aboveOk(f.hc) && f.alpha > 0.05) {
       const c = project(B, f.hc);
       if (onScreen(c, 0)) {
-        label(f.name.toUpperCase(), c[0], c[1], { pri: lit ? 1 : 4, size: lit ? 13 : 11, weight: 600, color: `rgba(170,198,255,${(lit ? 1 : 0.7) * f.alpha})`, font: FONT_DATA, align: "center", spacing: 3, alpha: f.hc[2] < 0 ? 0.6 : 1 });
+        label(f.name.toUpperCase(), c[0], c[1], { pri: lit ? 1 : 4, size: lit ? 13 : 11, weight: 600, color: `rgba(170,198,255,${(lit ? 1 : 0.7) * f.alpha})`, font: FONT_DATA, align: "center", spacing: 3, alpha: f.hc[2] < 0 ? 0.6 : 1, owner: { type: "cons", obj: f } });
         visible.push({ type: "cons", obj: f, x: c[0], y: c[1] - 5, r: 18 });
       }
     }
@@ -800,7 +805,7 @@ function draw(ts) {
     if (f.alpha > 0.05 || !f.hc || !aboveOk(f.hc)) continue;
     const c = project(B, f.hc);
     if (onScreen(c, 0)) {
-      label(f.name.toUpperCase(), c[0], c[1], { pri: 6, size: 10, weight: 500, color: "rgba(140,165,230,0.42)", font: FONT_DATA, align: "center", spacing: 2.5, alpha: f.hc[2] < 0 ? 0.6 : 1 });
+      label(f.name.toUpperCase(), c[0], c[1], { pri: 6, size: 10, weight: 500, color: "rgba(140,165,230,0.42)", font: FONT_DATA, align: "center", spacing: 2.5, alpha: f.hc[2] < 0 ? 0.6 : 1, owner: { type: "cons", obj: f } });
       visible.push({ type: "cons", obj: f, x: c[0], y: c[1] - 4, r: 14 });
     }
   }
@@ -815,7 +820,7 @@ function draw(ts) {
       drawDso(d, p, size, fade);
       visible.push({ type: "dso", obj: d, x: p[0], y: p[1], r: Math.min(size / 2, 24) });
       if (aboveOk(d.h) && (d.name || zoomBoost > 0.6) && (d.mag < 5.2 || zoomBoost > 0.4 || d.major > 60))
-        label(d.name || d.code, p[0], p[1] + size / 2 + 12, { pri: 3 + d.mag * 0.05, size: 11, color: hexA(DSO_COLOR[d.fam], 0.85 * fade), align: "center", alpha: d.h[2] < 0 ? 0.6 : 1 });
+        label(d.name || d.code, p[0], p[1] + size / 2 + 12, { pri: 3 + d.mag * 0.05, size: 11, color: hexA(DSO_COLOR[d.fam], 0.85 * fade), align: "center", alpha: d.h[2] < 0 ? 0.6 : 1, owner: { type: "dso", obj: d } });
     }
   }
 
@@ -851,7 +856,7 @@ function draw(ts) {
     ctx.globalAlpha = 1;
     visible.push({ type: "star", obj: s, x: s.px, y: s.py, r });
     if (layers.starNames && s.name && aboveOk(s.h) && !day && (s.mag < 1.6 + zoomBoost * 1.2 || lit > 0.3))
-      label(s.name, s.px + r + 6, s.py + 4, { pri: 2 + s.mag * 0.1, color: lit ? "rgba(235,240,255,0.95)" : "rgba(215,222,242,0.72)", alpha: s.h[2] < 0 ? 0.6 : 1 });
+      label(s.name, s.px + r + 6, s.py + 4, { pri: 2 + s.mag * 0.1, color: lit ? "rgba(235,240,255,0.95)" : "rgba(215,222,242,0.72)", alpha: s.h[2] < 0 ? 0.6 : 1, owner: { type: "star", obj: s } });
   }
 
   // Sun, Moon, planets
@@ -871,11 +876,13 @@ function draw(ts) {
       if (b.body === "Saturn") { ctx.strokeStyle = b.color; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.ellipse(p[0], p[1], b.r * 2.2, b.r * 0.7, -0.35, 0, 7); ctx.stroke(); }
     }
     visible.push({ type: "body", obj: b, x: p[0], y: p[1], r: b.r + 4, pri: 1 });
-    if (aboveOk(b.h)) label(b.body, p[0] + b.r + 7, p[1] + 4.5, { pri: 0, size: 13, weight: 600, color: b.body === "Moon" || b.body === "Sun" ? "#eef0f6" : "#f2c46d", alpha: b.h[2] < 0 ? 0.65 : 1 });
+    if (aboveOk(b.h)) label(b.body, p[0] + b.r + 7, p[1] + 4.5, { pri: 0, size: 13, weight: 600, color: b.body === "Moon" || b.body === "Sun" ? "#eef0f6" : "#f2c46d", alpha: b.h[2] < 0 ? 0.65 : 1, owner: { type: "body", obj: b } });
   }
 
   drawGround(B, haze);
   drawLabels();
+  hover = findHover();
+  drawHover(B);
   drawReticle(focus);
   drawSelection(B);
   drawTarget(B, tNow);
@@ -990,6 +997,7 @@ function drawLabels() {
     const box = [x0 - 3, y0 - 2, x0 + w + 3, L.y + 3];
     if (placed.some(b => box[0] < b[2] && box[2] > b[0] && box[1] < b[3] && box[3] > b[1])) continue;
     placed.push(box);
+    if (L.owner) labelHits.push({ box, owner: L.owner, L, w });
     ctx.globalAlpha = L.alpha; ctx.textAlign = L.align;
     ctx.strokeStyle = "rgba(3,5,12,0.75)"; ctx.lineWidth = 3; ctx.strokeText(L.text, L.x, L.y);
     ctx.fillStyle = L.color; ctx.fillText(L.text, L.x, L.y);
@@ -1048,6 +1056,65 @@ function drawTarget(B, tNow) {
     ctx.lineWidth = 3; ctx.strokeText(txt, lx, ly); ctx.fillStyle = "#f2c46d"; ctx.fillText(txt, lx, ly);
   }
   ctx.restore();
+}
+
+
+/* ---------- hover pre-select: what the mouse, or the center ring, is resting on ---------- */
+const sameObj = (a, b) => a && b && a.type === b.type && (a.obj === b.obj || (a.type === "body" && a.obj.body === b.obj.body));
+function hitLabel(x, y, pad) {
+  for (const h of labelHits) { const b = h.box; if (x >= b[0] - pad && x <= b[2] + pad && y >= b[1] - pad && y <= b[3] + pad) return h; }
+  return null;
+}
+function nearestObject(x, y, reach) {
+  let best = null, bd = 1e9;
+  for (const o of visible) {
+    const dist = Math.hypot(o.x - x, o.y - y);
+    if (dist > Math.max(reach, o.r + 6)) continue;
+    const score = dist - (o.pri ? 10 : 0) - (o.type === "dso" ? 4 : 0) + (o.type === "star" ? o.obj.mag * 1.5 : 0) + (o.type === "cons" ? 12 : 0);
+    if (score < bd) { bd = score; best = o; }
+  }
+  return best ? { type: best.type, obj: best.obj } : null;
+}
+function objectAt(x, y, reach, labelPad) {
+  // a name always wins over whatever is drawn behind it
+  const lh = hitLabel(x, y, labelPad);
+  return lh ? lh.owner : nearestObject(x, y, reach);
+}
+function findHover() {
+  if (!$("info").hidden || SHEETS.some(id => !$(id).hidden) || dragStart) return null;
+  if (mouse) return objectAt(mouse.x, mouse.y, 22, 3);
+  return objectAt(W / 2, H / 2, RETICLE, 6);
+}
+function drawHover(B) {
+  const chip = $("hoverChip");
+  if (!hover) { chip.hidden = true; canvas.style.cursor = ""; return; }
+  canvas.style.cursor = mouse ? "pointer" : "";
+  const v = targetVec(hover), p = v ? project(B, v) : null;
+  ctx.save();
+  ctx.strokeStyle = "rgba(200,220,255,0.85)"; ctx.lineWidth = 1.4;
+  if (p && hover.type !== "cons") { // soft brackets around the object
+    const r = 13, k = 5; ctx.beginPath();
+    for (const [sx, sy] of [[-1,-1],[1,-1],[1,1],[-1,1]]) { ctx.moveTo(p[0] + sx * r, p[1] + sy * (r - k)); ctx.lineTo(p[0] + sx * r, p[1] + sy * r); ctx.lineTo(p[0] + sx * (r - k), p[1] + sy * r); }
+    ctx.stroke();
+  }
+  const lh = labelHits.find(h => sameObj(h.owner, hover));
+  if (lh) { // a pill behind its name, and the name redrawn bright
+    const b = lh.box, L = lh.L;
+    ctx.fillStyle = "rgba(143,178,255,0.2)"; ctx.strokeStyle = "rgba(170,198,255,0.7)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(b[0] - 4, b[1] - 2, b[2] - b[0] + 8, b[3] - b[1] + 3, 7) : ctx.rect(b[0] - 4, b[1] - 2, b[2] - b[0] + 8, b[3] - b[1] + 3); ctx.fill(); ctx.stroke();
+    ctx.font = `${L.weight} ${L.size}px ${L.font}`; if ("letterSpacing" in ctx) ctx.letterSpacing = L.spacing + "px";
+    ctx.textAlign = L.align; ctx.fillStyle = "#ffffff"; ctx.fillText(L.text, L.x, L.y);
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+  } else if (p) {
+    ctx.font = "600 12px " + FONT_UI; ctx.textAlign = "left"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(3,5,12,0.8)";
+    ctx.strokeText(targetName(hover), p[0] + 17, p[1] + 4); ctx.fillStyle = "#ffffff"; ctx.fillText(targetName(hover), p[0] + 17, p[1] + 4);
+  }
+  ctx.restore();
+  // in ring mode, a button under the ring opens what it's aimed at
+  if (mouse || !motionOn) { chip.hidden = true; return; }
+  const name = targetName(hover);
+  if (chip.dataset.name !== name) { chip.dataset.name = name; $("hoverName").textContent = name; }
+  chip.hidden = false;
 }
 
 /* ---------- HUD ---------- */
@@ -1330,14 +1397,10 @@ function drawJupiterMoons(g, w, h) {
 
 /* ---------- tap picking ---------- */
 function pick(x, y) {
-  let best = null, bd = 1e9;
-  for (const o of visible) {
-    const dist = Math.hypot(o.x - x, o.y - y);
-    if (dist > Math.max(30, o.r + 6)) continue;
-    const score = dist - (o.pri ? 10 : 0) - (o.type === "dso" ? 4 : 0) + (o.type === "star" ? o.obj.mag * 1.5 : 0) + (o.type === "cons" ? 12 : 0);
-    if (score < bd) { bd = score; best = o; }
-  }
-  if (best) showInfo({ type: best.type, obj: best.obj }); else if (!$("info").hidden) closeSheets();
+  // a tap inside the center ring opens whatever the ring is resting on
+  if (hover && !mouse && Math.hypot(x - W / 2, y - H / 2) < RETICLE + 4) { showInfo(hover); return; }
+  const hit = objectAt(x, y, 30, 6);
+  if (hit) showInfo(hit); else if (!$("info").hidden) closeSheets();
 }
 
 /* ---------- input ---------- */
