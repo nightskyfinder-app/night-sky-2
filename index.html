@@ -1392,37 +1392,50 @@ window.addEventListener("keydown", e => {
 
 /* ---------- phone motion (any orientation, with roll) ---------- */
 let motionSeen = false, sF = null, sU = null, absoluteSeen = false, calWarned = false;
+let northOffset = null; // iPhone: turn between the motion sensor's own zero and true north, learned slowly from the compass
+const wrap180 = d => ((d % 360) + 540) % 360 - 180;
 function screenAngle() { const a = screen.orientation && typeof screen.orientation.angle === "number" ? screen.orientation.angle : (typeof window.orientation === "number" ? window.orientation : 0); return a * D2R; }
 function onOrient(e) {
   if (!motionOn) return;
-  let alpha = e.alpha;
-  const beta = e.beta, gamma = e.gamma;
-  if (beta == null || gamma == null) return;
-  if (typeof e.webkitCompassHeading === "number" && e.webkitCompassHeading >= 0) alpha = -e.webkitCompassHeading;
-  else if (alpha == null) return;
-  else if (e.type === "deviceorientation" && e.absolute !== true && absoluteSeen) return;
-  motionSeen = true;
-  if (!calWarned && typeof e.webkitCompassAccuracy === "number" && (e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 25)) {
-    calWarned = true; toast("Your compass needs calibrating. Wave your phone in a figure-8 a few times.", 6000);
-  }
+  const alpha = e.alpha, beta = e.beta, gamma = e.gamma;
+  if (alpha == null || beta == null || gamma == null) return;
+  const ios = typeof e.webkitCompassHeading === "number";
+  if (!ios && e.type === "deviceorientation" && e.absolute !== true && absoluteSeen) return;
   const a = alpha * D2R, b = beta * D2R, g = gamma * D2R;
   const ca = Math.cos(a), sa = Math.sin(a), cb = Math.cos(b), sb = Math.sin(b), cg = Math.cos(g), sg = Math.sin(g);
-  // device axes in East / North / Up
-  const col1 = [ca*cg - sa*sb*sg, sa*cg + ca*sb*sg, -cb*sg];
-  const col2 = [-sa*cb, ca*cb, sb];
-  const col3 = [ca*sg + sa*sb*cg, sa*sg - ca*sb*cg, cb*cg];
+  // device axes in East / North / Up (in the sensor's frame; one consistent rotation, so no gimbal jumps)
+  let col1 = [ca*cg - sa*sb*sg, sa*cg + ca*sb*sg, -cb*sg];
+  let col2 = [-sa*cb, ca*cb, sb];
+  let col3 = [ca*sg + sa*sb*cg, sa*sg - ca*sb*cg, cb*cg];
+  if (ios) {
+    // the compass reports the heading of whichever phone axis is nearest level: the camera when upright, the top edge when flat
+    const back = [-col3[0], -col3[1], -col3[2]], ref = Math.abs(back[2]) < Math.abs(col2[2]) ? back : col2;
+    const goodCompass = e.webkitCompassHeading >= 0 && !(typeof e.webkitCompassAccuracy === "number" && (e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 45));
+    if (goodCompass && Math.abs(ref[2]) < 0.6) {
+      const d = wrap180(e.webkitCompassHeading - Math.atan2(ref[0], ref[1]) * R2D);
+      northOffset = northOffset == null ? d : northOffset + wrap180(d - northOffset) * 0.03;
+    }
+    if (northOffset == null) return;
+    const o = northOffset * D2R, co = Math.cos(o), so = Math.sin(o);
+    const turn = v => [v[0]*co + v[1]*so, v[1]*co - v[0]*so, v[2]];
+    col1 = turn(col1); col2 = turn(col2); col3 = turn(col3);
+  }
+  motionSeen = true;
+  if (!calWarned && ios && typeof e.webkitCompassAccuracy === "number" && (e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 25)) {
+    calWarned = true; toast("Your compass needs calibrating. Wave your phone in a figure-8 a few times.", 6000);
+  }
   const th = screenAngle(), st = Math.sin(th), ct = Math.cos(th);
   const toNWU = v => [v[1], -v[0], v[2]];
   const f = toNWU([-col3[0], -col3[1], -col3[2]]);
   const up = toNWU([st*col1[0] + ct*col2[0], st*col1[1] + ct*col2[1], st*col1[2] + ct*col2[2]]);
-  sF = sF ? norm(sF.map((x, i) => x * 0.72 + f[i] * 0.28)) : f;
-  sU = sU ? norm(sU.map((x, i) => x * 0.72 + up[i] * 0.28)) : up;
+  sF = sF ? norm(sF.map((x, i) => x * 0.8 + f[i] * 0.2)) : f;
+  sU = sU ? norm(sU.map((x, i) => x * 0.8 + up[i] * 0.2)) : up;
   const [az, alt] = toAzAlt(sF);
   const { r0, u0 } = viewAxes(az, alt);
   const k = dot(sU, sF), uP = [sU[0] - k*sF[0], sU[1] - k*sF[1], sU[2] - k*sF[2]];
   view.az = az; view.alt = alt; view.roll = Math.atan2(-dot(uP, r0), dot(uP, u0));
 }
-window.addEventListener("deviceorientationabsolute", e => { absoluteSeen = true; onOrient(e); });
+window.addEventListener("deviceorientationabsolute", e => { if (e.alpha != null) absoluteSeen = true; onOrient(e); });
 window.addEventListener("deviceorientation", onOrient);
 async function startMotion(quiet) {
   try {
@@ -1431,7 +1444,7 @@ async function startMotion(quiet) {
       if (res !== "granted") throw new Error("denied");
     }
   } catch (err) { toast("Motion access wasn't allowed. You can still drag to look around."); return false; }
-  motionOn = true; motionSeen = false; sF = sU = null; mouse = null; slew = null;
+  motionOn = true; motionSeen = false; sF = sU = null; northOffset = null; mouse = null; slew = null;
   $("motionBtn").setAttribute("aria-pressed", "true");
   if (!quiet) toast(load("sky.calTip") ? "Point your phone at the sky." : "Point your phone at the sky. If directions look off, wave it in a figure-8 to calibrate the compass.", 5000);
   store("sky.calTip", true);

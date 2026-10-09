@@ -1,5 +1,5 @@
 // Night Sky Finder offline support: keeps the app and its data on the phone so it opens with no signal.
-const CACHE = "night-sky-v3";
+const CACHE = "night-sky-v4";
 const SHELL = ["./", "index.html", "astronomy.browser.min.js", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
