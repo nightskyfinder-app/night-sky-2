@@ -1,6 +1,6 @@
 # Night Sky Finder
 
-**Open the app:** https://yourusername.github.io/night-sky-v2/ · a beginner's guide to using it is below.
+**Open the app:** [nightskyfinder-app.github.io/night-sky-v2](https://nightskyfinder-app.github.io/night-sky-v2/) · a beginner's guide to using it is below.
 
 ## What it is
 
@@ -127,7 +127,7 @@ These work from your GitHub site, not inside Claude.
 
 Open your GitHub site once with a signal, add it to your home screen, and it works anywhere after that, even with no service.
 
-1. Open your site address (for example, yourusername.github.io/night-sky-v2) on your phone.
+1. Open nightskyfinder-app.github.io/night-sky-v2 on your phone.
 2. **iPhone:** in Safari, tap **Share**, then **Add to Home Screen**. **Android:** in Chrome, tap the **⋮** menu, then **Install app**.
 3. Open it from the new icon. It runs full screen like a regular app.
 
