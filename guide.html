@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Night Sky Finder Guide</title>
+<meta name="theme-color" content="#04060d">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root { color-scheme: dark; --ink:#04060d; --panel:#0c1020; --line:rgba(150,170,230,.18); --fg:#e4e8f6; --muted:#9aa3c2; --accent:#f2c46d; --cons:#8fb2ff;
+  --ui:"Jost","Futura","Century Gothic",system-ui,sans-serif; --data:"JetBrains Mono",ui-monospace,Menlo,monospace; }
+html { background:var(--ink); }
+body { margin:0; background:var(--ink); color:var(--fg); font:17px/1.6 var(--ui); padding:0 16px 64px; }
+main { max-width:720px; margin:0 auto; }
+.top { position:sticky; top:0; background:rgba(4,6,13,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid var(--line); margin:0 -16px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; gap:12px; z-index:2; }
+.top b { font-weight:600; }
+.open { background:var(--accent); color:#1b1404; text-decoration:none; font-weight:600; border-radius:999px; padding:8px 16px; white-space:nowrap; }
+h1 { font-size:34px; line-height:1.15; margin:36px 0 8px; text-wrap:balance; }
+h2 { font-size:24px; margin:44px 0 10px; padding-top:20px; border-top:1px solid var(--line); text-wrap:balance; }
+p, li { color:#cfd5ea; }
+strong { color:var(--fg); }
+a { color:var(--cons); }
+img { max-width:100%; height:auto; border-radius:14px; background:#fff; display:block; margin:16px 0; }
+.tw { overflow-x:auto; margin:16px 0; border:1px solid var(--line); border-radius:12px; }
+table { border-collapse:collapse; width:100%; font-size:15px; }
+th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { font:500 12px/1.3 var(--data); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); background:var(--panel); }
+tr:last-child td { border-bottom:0; }
+nav.toc { font:500 14px/1.9 var(--ui); margin:18px 0 0; display:flex; flex-wrap:wrap; gap:4px 14px; }
+nav.toc a { text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="top"><b>Night Sky Finder · Guide</b><a class="open" href="./">Open the app</a></div>
+<main>
+<h1>Night Sky Finder: Beginner's Guide</h1>
+<nav class="toc"><a href="#what-it-is">What it is</a><a href="#the-screen-at-a-glance">The screen at a glance</a><a href="#looking-around">Looking around</a><a href="#finding-things">Finding things</a><a href="#tonight">Tonight</a><a href="#time-travel">Time travel</a><a href="#layers">Layers</a><a href="#phone-tips">Phone tips</a><a href="#install-it-and-use-it-offline">Install it and use it offline</a><a href="#troubleshooting">Troubleshooting</a><a href="#plain-english-glossary">Plain-English glossary</a></nav>
+<h2 id="what-it-is">What it is</h2>
+<p>Night Sky Finder is a map of the sky above you right now. It shows the stars, planets, Moon, constellations, galaxies and star clusters in their real positions for your location and time. Tap anything to learn what it is.</p>
+<p>It runs in two places. Everything on the map works in both, but a few phone features only work from your own website.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Inside Claude</th>
+<th>Your GitHub site</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sky map, search, Tonight, time travel, info cards</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Point your phone at the sky</td>
+<td>No, drag instead</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Camera view</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>GPS location</td>
+<td>No, pick a city</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Works with no signal</td>
+<td>No</td>
+<td>Yes, after first visit</td>
+</tr>
+<tr>
+<td>Home-screen icon</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table></div>
+<p>If you're stargazing outside, use your GitHub site. Use the Claude version for planning at a desk.</p>
+<h2 id="the-screen-at-a-glance">The screen at a glance</h2>
+<p><img alt="Screen map: every button and what it does" src="screen-map.png" /></p>
+<p>The right-hand column holds Search, Tonight, Layers and red mode; the two bottom-right buttons (camera and phone pointing) work only from your own website. Tap anything in the sky itself to learn about it.</p>
+<h2 id="looking-around">Looking around</h2>
+<p>Drag the sky with one finger to turn and tilt your view; pinch to zoom.</p>
+<ul>
+<li><strong>Drag</strong> left and right to turn, up and down to look higher or lower. On a computer, drag with the mouse or use the arrow keys.</li>
+<li><strong>Pinch</strong> to zoom in on a small area or out to see half the sky. On a computer, scroll the mouse wheel or press + and −.</li>
+<li><strong>Point your phone</strong> instead of dragging: tap the phone button (bottom right) and hold the phone up toward the sky. The map follows wherever you aim, in portrait or landscape. Tap the button again to go back to dragging.</li>
+<li><strong>Look below the horizon</strong> by dragging down past the ground line. The ground is see-through, so you can see the stars on the other side of the Earth, shown dimmer. Straight down is marked NADIR; straight up is ZENITH.</li>
+</ul>
+<p>The faint ring in the middle of the screen is your aiming point. Rest it on any star that belongs to a constellation and that constellation's lines fade in, its stars brighten, and its name appears at the bottom left. Move away and they fade out.</p>
+<p>The bottom-left readout tells you where you're looking: compass direction (SE 128°), how high (39° up), and how wide your view is (90° view).</p>
+<h2 id="finding-things">Finding things</h2>
+<p>To find something by name, tap the magnifying glass and type; to learn about something you can see, tap it.</p>
+<p><strong>Search</strong></p>
+<ol>
+<li>Tap the magnifying glass (top of the right-hand column).</li>
+<li>Type a few letters: a planet (Saturn), a star (Vega), a constellation (Orion), a galaxy or nebula (Andromeda, M42), or a meteor shower (Orionids).</li>
+<li>Tap a result. Each one says whether it's up now or below the horizon.</li>
+</ol>
+<p>The map glides to it and circles it with a pulsing gold ring. A gold "Finding…" bar at the top shows how far away it is. Tap the × on that bar to stop.</p>
+<p><strong>Following the gold arrow</strong></p>
+<p>When the object is off screen, a gold arrow at the edge points the way, labeled with its name and distance in degrees. Turn or drag toward the arrow until the ring appears. This is most useful with phone pointing on: just follow the arrow with your phone.</p>
+<p><strong>Info cards</strong></p>
+<p>Tap any star, planet, galaxy, cluster or constellation name and a card slides up. It shows:</p>
+<ul>
+<li>A picture: the Moon's actual phase, Jupiter's four moons where they really are tonight, Saturn's real ring tilt, a constellation's figure, or a drawing of a galaxy or nebula.</li>
+<li>Where it is, when it rises and sets, how bright it is, and how far away.</li>
+<li>A short note, including whether you'll need binoculars or a telescope.</li>
+<li><strong>Point me there</strong>, which starts the gold finder.</li>
+<li><strong>About [constellation]</strong> on star cards, which opens that constellation's story.</li>
+<li><strong>Read more on Wikipedia</strong>.</li>
+</ul>
+<p>Tap the × or anywhere on empty sky to close the card.</p>
+<h2 id="tonight">Tonight</h2>
+<p>The star button (second in the right-hand column) opens "What's up tonight": a ready-made viewing plan for your location. It also opens by itself the first time you use the app each day.</p>
+<p>It lists, in order:</p>
+<ul>
+<li><strong>Sunset, sunrise, and when it's fully dark.</strong> Faint objects need full darkness.</li>
+<li><strong>The Moon:</strong> its phase, rise and set times, and a warning when its light will wash out faint galaxies.</li>
+<li><strong>Planets you can see,</strong> with the hours they're up and when and where they're highest.</li>
+<li><strong>Close pairings,</strong> such as the Moon passing near Jupiter.</li>
+<li><strong>Eclipses</strong> in the next few weeks.</li>
+<li><strong>Meteor showers</strong> happening now, when they peak, and the best time to watch.</li>
+<li><strong>The best galaxies, nebulae and clusters</strong> to try, high in the sky after dark.</li>
+</ul>
+<p>Tap any row marked FIND and the app takes you straight to it. Close the panel with the × at top right.</p>
+<h2 id="time-travel">Time travel</h2>
+<p>Tap the clock (top right) to see the sky at any other time.</p>
+<ul>
+<li><strong>Slider:</strong> drag to move up to 12 hours earlier or later.</li>
+<li><strong>−1 day, −1 hr, +1 hr, +1 day:</strong> jump in steps. Use the day buttons to plan a different night.</li>
+<li><strong>Play:</strong> runs the sky forward at 15 minutes per second, so you can watch stars rise and set. Tap again to pause.</li>
+<li><strong>Now:</strong> returns to the present.</li>
+</ul>
+<p>While you're away from the present, the clock turns gold and shows the date. Tonight, search and info cards all follow the time you picked, so you can check, for example, where Saturn will be at 10 PM next Friday.</p>
+<p>Times are shown in your phone's time zone. If you pick a city in another time zone, times still read in yours.</p>
+<h2 id="layers">Layers</h2>
+<p>The stacked-squares button (third in the right-hand column) controls what the map shows. Your choices are remembered.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Options</th>
+<th>What it does</th>
+<th>Tip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sky brightness</td>
+<td>City, Suburb, Dark</td>
+<td>Shows only the stars you could actually see from that kind of sky</td>
+<td>Pick what matches where you're standing; Dark shows about 8,800 stars</td>
+</tr>
+<tr>
+<td>Constellation lines</td>
+<td>Off, Aim, All</td>
+<td>Aim draws a figure when the center ring rests on one of its stars</td>
+<td>Aim keeps the map clean; All is good for learning shapes</td>
+</tr>
+<tr>
+<td>Ground</td>
+<td>See-through, Solid</td>
+<td>See-through lets you look below the horizon</td>
+<td>Solid matches what you can really see</td>
+</tr>
+<tr>
+<td>Constellation names</td>
+<td>On, Off</td>
+<td>Faint labels for all 88 constellations</td>
+<td></td>
+</tr>
+<tr>
+<td>Star names</td>
+<td>On, Off</td>
+<td>Names of the brighter stars</td>
+<td></td>
+</tr>
+<tr>
+<td>Galaxies, nebulae &amp; clusters</td>
+<td>On, Off</td>
+<td>Symbols for 131 deep-sky objects; the panel shows a key</td>
+<td>Galaxy = pink oval, nebula = green square, cluster = gold circle</td>
+</tr>
+<tr>
+<td>Milky Way</td>
+<td>On, Off</td>
+<td>The soft glow of our galaxy</td>
+<td>Brightest from a dark site in summer and early fall</td>
+</tr>
+<tr>
+<td>Twinkle</td>
+<td>On, Off</td>
+<td>Stars shimmer, more near the horizon</td>
+<td>Turn off if motion bothers you</td>
+</tr>
+<tr>
+<td>Height grid</td>
+<td>On, Off</td>
+<td>Rings every 30° above and below the horizon</td>
+<td>Helps judge how high to look</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="phone-tips">Phone tips</h2>
+<p>These work from your GitHub site, not inside Claude.</p>
+<ul>
+<li><strong>Set your location first.</strong> Tap the place name (top left), then <strong>Use GPS</strong>, or pick the nearest city. Everything depends on this.</li>
+<li><strong>Camera view:</strong> tap the camera button (bottom right). Your phone asks for camera permission; allow it. Stars, labels and planets are drawn over the live camera. If they sit a little off from the real thing, pinch to resize until they line up. The app remembers that setting.</li>
+<li><strong>Calibrate the compass</strong> if directions look wrong: wave your phone in a slow figure-8 a few times. Stay a few feet from cars, metal railings and speakers, which throw compasses off.</li>
+<li><strong>Portrait or landscape</strong> both work. Tilting the phone sideways tilts the view to match.</li>
+<li><strong>Red night mode:</strong> tap the moon button (bottom of the right-hand column). It turns the whole screen red so your eyes stay adjusted to the dark. Turn your phone brightness down too.</li>
+<li><strong>Give your eyes time.</strong> It takes about 20 minutes in the dark to see the faintest stars.</li>
+</ul>
+<h2 id="install-it-and-use-it-offline">Install it and use it offline</h2>
+<p>Open your GitHub site once with a signal, add it to your home screen, and it works anywhere after that, even with no service.</p>
+<ol>
+<li>Open your site address (for example, yourusername.github.io/night-sky-v2) on your phone.</li>
+<li><strong>iPhone:</strong> in Safari, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>. <strong>Android:</strong> in Chrome, tap the <strong>⋮</strong> menu, then <strong>Install app</strong>.</li>
+<li>Open it from the new icon. It runs full screen like a regular app.</li>
+</ol>
+<p>The app saves itself on your phone the first time it loads. At a dark site with no signal, it still opens, with every star, planet and calculation working. When you're back online, it picks up any updates automatically the next time you open it.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phone pointing or camera says it can't work</td>
+<td>You're in the Claude version. Open your GitHub site instead.</td>
+</tr>
+<tr>
+<td>The map points the wrong way</td>
+<td>Wave the phone in a figure-8 to calibrate the compass, and move away from metal.</td>
+</tr>
+<tr>
+<td>Stars don't line up with the camera</td>
+<td>Pinch to resize the view until they match.</td>
+</tr>
+<tr>
+<td>The sky looks wrong for where I am</td>
+<td>Tap the place name (top left) and set your location.</td>
+</tr>
+<tr>
+<td>The clock is gold and times look off</td>
+<td>You're time-traveling. Tap the clock, then <strong>Now</strong>.</td>
+</tr>
+<tr>
+<td>Very few stars show</td>
+<td>Sky brightness may be set to City, or it's still twilight. Check Layers, or wait until fully dark.</td>
+</tr>
+<tr>
+<td>Galaxy and cluster symbols are missing</td>
+<td>They hide until the sky is dark. Also check that Galaxies, nebulae &amp; clusters is on in Layers.</td>
+</tr>
+<tr>
+<td>Constellation lines never appear</td>
+<td>Set Constellation lines to Aim or All in Layers, then rest the center ring on a bright star.</td>
+</tr>
+<tr>
+<td>The Tonight panel closed</td>
+<td>Tap the star button in the right-hand column.</td>
+</tr>
+<tr>
+<td>The site shows the old version</td>
+<td>Close the app or tab completely and reopen it.</td>
+</tr>
+<tr>
+<td>The site says 404</td>
+<td>Wait two minutes after uploading, and check that index.html is at the top level of the repository.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="plain-english-glossary">Plain-English glossary</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Magnitude (mag)</td>
+<td>How bright something looks. Lower is brighter: Venus is about −4, the faintest stars you can see from a dark site are about 6.5.</td>
+</tr>
+<tr>
+<td>Degrees (°)</td>
+<td>How far apart things are on the sky. Your fist held at arm's length covers about 10°.</td>
+</tr>
+<tr>
+<td>Direction (azimuth)</td>
+<td>Compass bearing: 0° north, 90° east, 180° south, 270° west.</td>
+</tr>
+<tr>
+<td>Height (altitude)</td>
+<td>Angle above the horizon: 0° on the horizon, 90° straight overhead. Negative means below the horizon.</td>
+</tr>
+<tr>
+<td>Zenith / Nadir</td>
+<td>Straight up / straight down.</td>
+</tr>
+<tr>
+<td>Constellation</td>
+<td>One of 88 official regions of the sky, each with a traditional star pattern.</td>
+</tr>
+<tr>
+<td>Deep-sky object</td>
+<td>Anything beyond our solar system that isn't a single star: galaxies, nebulae and star clusters.</td>
+</tr>
+<tr>
+<td>Messier object (M31, M42…)</td>
+<td>One of 110 bright deep-sky objects listed by Charles Messier in the 1700s; great first targets.</td>
+</tr>
+<tr>
+<td>Galaxy</td>
+<td>A separate system of billions of stars, far beyond the Milky Way.</td>
+</tr>
+<tr>
+<td>Nebula</td>
+<td>A cloud of glowing gas and dust, often where stars are being born.</td>
+</tr>
+<tr>
+<td>Open / globular cluster</td>
+<td>A loose group of young stars / a dense ball of very old stars.</td>
+</tr>
+<tr>
+<td>Radiant</td>
+<td>The spot a meteor shower's meteors seem to stream from.</td>
+</tr>
+<tr>
+<td>Light-year (ly)</td>
+<td>The distance light travels in a year, about 6 trillion miles.</td>
+</tr>
+<tr>
+<td>AU</td>
+<td>The Earth–Sun distance, about 93 million miles. Used for planets.</td>
+</tr>
+<tr>
+<td>Twilight</td>
+<td>The time after sunset (or before sunrise) when the sky isn't fully dark yet.</td>
+</tr>
+</tbody>
+</table></div>
+</main>
+</body>
+</html>
